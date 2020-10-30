@@ -2,7 +2,7 @@ import ROOT
 import sys
 oldargv = sys.argv[:]
 sys.argv = [ '-b-' ]
-from DataFormats.FWLite import Events, Handle
+from DataFormats.FWLite import Events, Handle, Runs
 from math import *
 import pandas as pd
 import numpy as np
@@ -14,10 +14,14 @@ ROOT.gSystem.Load("libFWCoreFWLite.so");
 ROOT.gSystem.Load("libDataFormatsFWLite.so");
 ROOT.FWLiteEnabler.enable()
 
-file_list = 'ken_tth_files.txt'
+file_list = 'ken_tth_v4_files.txt'
 f = open(file_list)
 tth_list = [line.strip('\n') for line in f.readlines()]
 #events = Events (["/home/bcaraway/CombineTool/CMSSW_10_2_9/src/EFT_Analyzer/HIG-RunIIFall17MiniAOD-00821ND_298299.root"])
+rfile = "/home/bcaraway/CombineTool/CMSSW_10_2_9/src/EFT_Analyzer/step_miniaodsim_TTHJet_v11_test.root" 
+#rfile = "/home/bcaraway/CombineTool/CMSSW_10_2_9/src/EFT_Analyzer/step_aodsim.root" 
+#events = Events ([rfile])
+#runs = Runs(     [rfile])
 events= Events(tth_list)
 '''
 Notes on file from Andrew W:
@@ -29,19 +33,34 @@ Additionally, each event has 184 EFT weights corresponding to varying 16 Wilson 
 handlePruned  = Handle ("std::vector<reco::GenParticle>")
 handlePacked  = Handle ("std::vector<pat::PackedGenParticle>")
 labelPruned = ("prunedGenParticles")
-labelPacked = ("packedGenParticles")
+#labelPacked = ("packedGenParticles")
+labelGen   = ("genParticles")
+
 handleLHE  = Handle("LHEEventProduct")
-labelLHE   = ("externalLHEProducer")
+handleRLHE = Handle("LHERunInfoProduct")
+#labelLHE   = ("externalLHEProducer")
+labelLHE = ("LHEFile")
+
 # loop over events
+
+#runs.getByLabel("source","",labelLHE, handleRLHE)
+#runs.getByLabel(labelLHE, handleRLHE)
+#lher = handleRLHE.product()
+#for i in lher:
+#    print(i)
+
 
 aux_df = pd.DataFrame()
 daughter_list = []
 
 for event in events:
-    event.getByLabel (labelLHE, handleLHE)
-    lhe = handleLHE.product()
-    #for w in lhe.weights():
-    #    print(w.id, w.wgt)
+    event.getByLabel ("source","",labelLHE, handleLHE)
+    #event.getByLabel ("source","",labelLHE, handleRLHE)
+    lhe  = handleLHE.product()
+    help(lhe)
+    #lher = handleRLHE.product()
+    for w in lhe.weights():
+        print(w.id, w.wgt)
     #exit()
     aux_df = pd.DataFrame(
         data=   [[float(wc.split('_')[1]) for wc in re.findall(r'c\w+_-?\d+\.\d+', w.id)] for w in lhe.weights() if 'EFT' in w.id],
@@ -61,13 +80,13 @@ data = []
 for count, event in enumerate(events):
     if count % 1000 == 0:
         print('Event #:{0:6} of {1:7}'.format(count,events.size()))
-    event.getByLabel (labelPacked, handlePacked)
-    event.getByLabel (labelPruned, handlePruned)
+    #event.getByLabel (labelPacked, handlePacked)
+    #event.getByLabel (labelPruned, handlePruned)
+    event.getByLabel(labelGen, handlePruned)
     event.getByLabel (labelLHE, handleLHE)
     # get the product
-    packed = handlePacked.product()
+    #packed = handlePacked.product()
     pruned = handlePruned.product()
-    
     lhe = handleLHE.product()
     
     
@@ -105,5 +124,5 @@ df = pd.DataFrame(
 )
 print(df)
 
-aux_df.to_pickle('aux_EFT_ken_tth.pkl')    
-df.to_pickle('eventInfo_EFT_ken_tth.pkl')
+aux_df.to_pickle('aux_EFT_ken_tthv2.pkl')    
+df.to_pickle('eventInfo_EFT_ken_tthv2.pkl')

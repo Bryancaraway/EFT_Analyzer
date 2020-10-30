@@ -43,7 +43,7 @@ for event in events:
     lhe = handleLHE.product()
     for w in lhe.weights():
         print(w.id, w.wgt)
-    exit()
+    #exit()
     aux_df = pd.DataFrame(
         data=   [[float(wc.split('_')[1]) for wc in re.findall(r'c\w+_-?\d+\.\d+', w.id)] for w in lhe.weights() if 'EFT' in w.id],
         columns=[str(wc.split('_')[0])    for wc in re.findall(r'c\w+_-?\d+\.\d+', lhe.weights()[1].id) if 'EFT' in lhe.weights()[1].id], 
@@ -98,9 +98,10 @@ df = pd.DataFrame(
     data = data,
     columns = np.append(aux_df.index.values,['H_pt','H_eta','H_phi','H_mass'])
 )
+print(df)
 
 #aux_df.to_pickle('aux_EFT.pkl')    
-df.to_pickle('eventInfo_EFT_tth.pkl')
+#df.to_pickle('eventInfo_EFT_tth.pkl')
 
 
     

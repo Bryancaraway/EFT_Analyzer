@@ -122,13 +122,24 @@ def main():
     plt.legend()
     plt.show()
 
+#def get_root_hist(roofile):
+#    from ROOT import TFile, TH1F
+#    f = TFile(roofile,'READ')
+#    hist_content = []
+#    for i in f.GetListOfKeys():
+#        hist = i.ReadObj()
+#        hist_content.append([hist.GetBinContent(j+1) for j in range(hist.GetNbinsX()+1)])
+#    hist_content = np.array(hist_content)
+#    hist_content = np.sum(hist_content, axis=0)
+#    hist_binned = [np.sum(hist_content[0:4]),np.sum(hist_content[4:6]), np.sum(hist_content[6:8]), np.sum(hist_content[8:])]
+#    return hist_binned/np.sum(hist_binned)
+
 def get_root_hist(roofile):
-    from ROOT import TFile, TH1F
-    f = TFile(roofile,'READ')
+    import uproot
+    roo = uproot.open(roofile)
     hist_content = []
-    for i in f.GetListOfKeys():
-        hist = i.ReadObj()
-        hist_content.append([hist.GetBinContent(j+1) for j in range(hist.GetNbinsX()+1)])
+    for hist in roo:
+        hist_content.append(roo[hist].values)
     hist_content = np.array(hist_content)
     hist_content = np.sum(hist_content, axis=0)
     hist_binned = [np.sum(hist_content[0:4]),np.sum(hist_content[4:6]), np.sum(hist_content[6:8]), np.sum(hist_content[8:])]
@@ -167,6 +178,7 @@ class EFT_DC_Prep:
         self.gen_df = pd.read_pickle(wgt_file).filter(regex=r'[HZ]_\w+') # will need to generalize
         self.eft    = eft_params
         self.beta   = self.compute_beta()
+        print(sum(self.beta['ctZ_ctZ']*4)/sum(self.beta['SM'])+sum(self.beta['ctZ']*2)/sum(self.beta['SM'])+1)
 
     def compute_beta(self):
         # taken from Jon's code
@@ -224,7 +236,7 @@ class EFT_DC_Prep:
             plt.xlim(self.gen_bins[k_type][0],self.gen_bins[k_type][-1])
             plt.xlabel(f'GEN {self.part} pt [GeV]')
             ax.legend()
-            plt.show()
+            #plt.show()
             #plt.close(fig)
             #
         import matplotlib.backends.backend_pdf as matpdf
@@ -323,7 +335,7 @@ class EFT_DC_Prep:
     def __getitem__(self,key):
         return getattr(self,key)
 
-def plot4Andrew(mc_hist,nd_hist,nd_bins,raw_c):
+def plot4Andrew(mc_hist,nd_hist,nd_bins,raw_cm, c_name='KH_files'):
     fig, (ax0,ax1) = plt.subplots(nrows=2)
     
     nd_err = (np.sqrt(raw_c)/raw_c)*nd_hist/np.sum(nd_hist)
@@ -332,12 +344,12 @@ def plot4Andrew(mc_hist,nd_hist,nd_bins,raw_c):
     bin_w = [200,100,100,100]
     #
     ax0.bar(bins,mc_hist, width=bin_w, label='MC_central', fill=False, edgecolor='tab:red')
-    ax0.bar(bins,nd_hist, width=bin_w, yerr=nd_err, ecolor='tab:blue', label='Custom', fill=False, edgecolor='tab:blue')
-    ax1.bar(bins,nd_hist/mc_hist, width=bin_w, yerr=nd_err/mc_hist, ecolor='tab:blue', label='nd/my_sample', fill=False, edgecolor='tab:blue')
+    ax0.bar(bins,nd_hist, width=bin_w, yerr=nd_err, ecolor='tab:blue', label=f'{c_name}', fill=False, edgecolor='tab:blue')
+    ax1.bar(bins,nd_hist/mc_hist, width=bin_w, yerr=nd_err/mc_hist, ecolor='tab:blue', label=f'{c_name}/central_sample', fill=False, edgecolor='tab:blue')
     ax0.legend()
     ax0.set_yscale('log')
     ax0.set_ylabel('% of Total')
-    ax1.set_ylabel('nd/my_sample')
+    ax1.set_ylabel(f'{c_name}/central_sample')
     ax1.set_ylim(.5,1.5)
     plt.grid(True)
     plt.xlim(0,500)
@@ -345,16 +357,20 @@ def plot4Andrew(mc_hist,nd_hist,nd_bins,raw_c):
 
 if __name__ == '__main__':
     #main()
-    part = sys.argv[1]
+    sfile = sys.argv[1]
     #
     pklDir   = 'pkl_files/'
-    aux_file = pklDir+'aux_EFT.pkl'
+    #aux_file = pklDir+'aux_EFT.pkl'
+    aux_file = pklDir+'aux_EFT_ken_tthv2.pkl'
     #aux_file = pklDir+'aux_EFT_ken_tth.pkl'
     file_dict = {'H': pklDir+'eventInfo_EFT_tth.pkl',
                  'Z': pklDir+'eventInfo_EFT_ttZ.pkl',
-                 'K': pklDir+'eventInfo_EFT_ken_tth.pkl'}
+                 'K': pklDir+'eventInfo_EFT_ken_tthv2.pkl',
+                 'ND': pklDir+'eventInfo_EFT_ND_tthv2.pkl'}
     #wgt_file = file_dict['K']
-    wgt_file = file_dict[part]
+    part = {'K':'H',
+            'ND':'H'}
+    wgt_file = file_dict[sfile]
 
     eft_wc    = ( # all 16 considered WC 
         'ctW', 'ctp', 'cpQM', 'ctli', 'cQei', 'ctZ', 'cQlMi', 'cQl3i', 'ctG', 'ctlTi', 'cbW', 'cpQ3', 'ctei', 'cpt', 'ctlSi', 'cptb'
@@ -366,15 +382,16 @@ if __name__ == '__main__':
         'cQl3i', 'ctli', 'cQei', 'cQlMi', 'ctlTi', 'ctei', 'ctlSi'
     )
     
-    eft = EFT_DC_Prep(part, aux_file, wgt_file, eft_hb_wc)
+
+    eft = EFT_DC_Prep(part.get(sfile,sfile), aux_file, wgt_file, eft_hb_wc)
     #print(eft.wgt_df)
     #print(eft['beta']['ctp'])
     #print(eft['beta']['ctp_ctp'])
     #print(eft['beta']['SM'])
     #print(pd.DataFrame.from_dict({'ctZ':[1,-1], 'ctW': 0}))
     
-    eft.plot_all_eft_scale()
-    eft.plot_xsec_eft_scale()
+    eft.plot_all_eft_scale( tag='ND_H')
+    eft.plot_xsec_eft_scale(tag='ND_H')
 
     #eft.plot_all_eft_scale(opt='q')
     #eft.plot_all_eft_scale(opt='p')
@@ -382,7 +399,8 @@ if __name__ == '__main__':
     ##
     #mc_hist = get_root_hist('h_ttz.root')
     #mc_hist = get_root_hist('h_tth.root')
-    #nd_hist, nd_bins, raw_c = eft.getMCshape()
+    #c_hist, c_bins, raw_c = eft.getMCshape()
+    #print(c_hist)
     ###
-    #plot4Andrew(mc_hist,nd_hist,nd_bins,raw_c)
+    #plot4Andrew(mc_hist,c_hist,c_bins,raw_c, c_name='KH_ND files')
     
