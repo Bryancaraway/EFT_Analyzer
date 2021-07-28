@@ -44,13 +44,15 @@ for event in events:
     lhe = handleLHE.product()
     for w in lhe.weights():
         print(w.id, w.wgt)
-    exit()
+    #exit()
     aux_df = pd.DataFrame(
         data=   [[float(wc.split('_')[1]) for wc in re.findall(r'c\w+_-?\d+\.\d+', w.id)] for w in lhe.weights() if 'EFT' in w.id],
         columns=[str(wc.split('_')[0])    for wc in re.findall(r'c\w+_-?\d+\.\d+', lhe.weights()[1].id) if 'EFT' in lhe.weights()[1].id], 
         index=[re.findall(r'EFTrwgt\d+',w.id)[0] for w in lhe.weights() if 'EFT' in w.id]
     )
     break
+print(aux_df)
+exit()
 #
 data = []
 for count, event in enumerate(events):

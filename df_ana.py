@@ -159,16 +159,38 @@ class EFT_DC_Prep:
     
     # heavy flavour + boson: 'ctp', 'cpQM', 'cpQ3', 'cpt', 'cptb', 'ctW', 'ctZ', 'cbW', 'ctG'
     # 2 sigma interval (sm) for AN2019_011
-    an2019_11 = {
-        'ctp' : [-14.12,-1.48,32.30,44.48],
-        'cpQM': [-3.45,3.33],
-        'cpQ3': [-7.21,2.25],
-        'cpt' : [-20.91,-14.10,-6.52,4.24],
-        'cptb': [-9.87, 9.67],
-        'ctW' : [-2.15,-0.29,0.21,1.96],
-        'ctZ' : [-2.14,2.19],
-        'cbW' : [-4.12,4.09],
-        'ctG' : [-1.26,-0.69,0.08,0.79]
+    #an2019_11 = {  # observed
+    #    'ctp' : [-14.12,-1.48,32.30,44.48],
+    #    'cpQM': [-3.45,3.33],
+    #    'cpQ3': [-7.21,2.25],
+    #    'cpt' : [-20.91,-14.10,-6.52,4.24],
+    #    'cptb': [-9.87, 9.67],
+    #    'ctW' : [-2.15,-0.29,0.21,1.96],
+    #    'ctZ' : [-2.14,2.19],
+    #    'cbW' : [-4.12,4.09],
+    #    'ctG' : [-1.26,-0.69,0.08,0.79]
+    # }
+    #an2019_11 = { # expected
+    #    'ctp' : [-6.86,11.39,19.65,37.12],
+    #    'cpQM': [-3.78,3.20],
+    #    'cpQ3': [-7.13,3.10],
+    #    'cpt' : [-5.52,4.90],
+    #    'cptb': [-12.26,12.09],
+    #    'ctW' : [-1.41,1.29],
+    #    'ctZ' : [-1.57,1.62],
+    #    'cbW' : [-3.36,3.33],
+    #    'ctG' : [-0.92,0.44]
+    # }
+    an2019_11 = {  # expected BC
+        'ctp' : [-3.97,5.04],
+        'cpQM': [-5.95,11.06],
+        'cpQ3': [-4.913,4.883],
+        'cpt' : [-13.50,7.28],
+        'cptb': [-11.47,11.57],
+        'ctW' : [-1.19,1.20],
+        'ctZ' : [-1.28,1.22],
+        'cbW' : [-5.26,5.36],
+        'ctG' : [-0.37,0.28]
      }
     
     def __init__(self, part, aux_file, wgt_file, eft_params):
@@ -231,7 +253,7 @@ class EFT_DC_Prep:
                 #             y=n[1]/n[2],
                 #             fmt='.')
             ax2.axhline(1, color='k', linewidth='1', linestyle='--', dashes=(4,8), snap=True)
-            ax2.set_ylim(.5,1.5)
+            ax2.set_ylim(0,2)
             ax2.set_ylabel('EFT/SM')
             plt.xlim(self.gen_bins[k_type][0],self.gen_bins[k_type][-1])
             plt.xlabel(f'GEN {self.part} pt [GeV]')
@@ -361,11 +383,15 @@ if __name__ == '__main__':
     #
     pklDir   = 'pkl_files/'
     #aux_file = pklDir+'aux_EFT.pkl'
-    aux_file = pklDir+'aux_EFT_ken_tthv2.pkl'
+    aux_file  = {'H': pklDir+'aux_EFT_ken_tthv2.pkl',
+                 'Z': pklDir+'aux_EFT.pkl',
+                 'K': pklDir+'aux_EFT_ken_tthv2.pkl',
+                 'ND':pklDir+'aux_EFT_ken_tthv2.pkl'
+                 }
     #aux_file = pklDir+'aux_EFT_ken_tth.pkl'
-    file_dict = {'H': pklDir+'eventInfo_EFT_tth.pkl',
-                 'Z': pklDir+'eventInfo_EFT_ttZ.pkl',
-                 'K': pklDir+'eventInfo_EFT_ken_tthv2.pkl',
+    file_dict = {'H':  pklDir+'eventInfo_EFT_tth.pkl',
+                 'Z':  pklDir+'eventInfo_EFT_ttZ.pkl',
+                 'K':  pklDir+'eventInfo_EFT_ken_tthv2.pkl',
                  'ND': pklDir+'eventInfo_EFT_ND_tthv2.pkl'}
     #wgt_file = file_dict['K']
     part = {'K':'H',
@@ -383,15 +409,15 @@ if __name__ == '__main__':
     )
     
 
-    eft = EFT_DC_Prep(part.get(sfile,sfile), aux_file, wgt_file, eft_hb_wc)
+    eft = EFT_DC_Prep(part.get(sfile,sfile), aux_file[sfile], wgt_file, eft_hb_wc)
     #print(eft.wgt_df)
     #print(eft['beta']['ctp'])
     #print(eft['beta']['ctp_ctp'])
     #print(eft['beta']['SM'])
     #print(pd.DataFrame.from_dict({'ctZ':[1,-1], 'ctW': 0}))
     
-    eft.plot_all_eft_scale( tag='ND_H')
-    eft.plot_xsec_eft_scale(tag='ND_H')
+    eft.plot_all_eft_scale( tag='11_4_BC')
+    eft.plot_xsec_eft_scale(tag='11_4_BC')
 
     #eft.plot_all_eft_scale(opt='q')
     #eft.plot_all_eft_scale(opt='p')

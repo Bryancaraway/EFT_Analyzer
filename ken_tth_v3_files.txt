@@ -1,0 +1,10 @@
+/cms/data/store/user/hatake/TopEFT/TTHJet_13TeV_TopEFT_v11/TTHJet_13TeV_TopEFT_MINIAOD_v11/201025_012355/0000/step_miniaodsim_1.root
+/cms/data/store/user/hatake/TopEFT/TTHJet_13TeV_TopEFT_v11/TTHJet_13TeV_TopEFT_MINIAOD_v11/201025_012355/0000/step_miniaodsim_10.root
+/cms/data/store/user/hatake/TopEFT/TTHJet_13TeV_TopEFT_v11/TTHJet_13TeV_TopEFT_MINIAOD_v11/201025_012355/0000/step_miniaodsim_2.root
+/cms/data/store/user/hatake/TopEFT/TTHJet_13TeV_TopEFT_v11/TTHJet_13TeV_TopEFT_MINIAOD_v11/201025_012355/0000/step_miniaodsim_3.root
+/cms/data/store/user/hatake/TopEFT/TTHJet_13TeV_TopEFT_v11/TTHJet_13TeV_TopEFT_MINIAOD_v11/201025_012355/0000/step_miniaodsim_4.root
+/cms/data/store/user/hatake/TopEFT/TTHJet_13TeV_TopEFT_v11/TTHJet_13TeV_TopEFT_MINIAOD_v11/201025_012355/0000/step_miniaodsim_5.root
+/cms/data/store/user/hatake/TopEFT/TTHJet_13TeV_TopEFT_v11/TTHJet_13TeV_TopEFT_MINIAOD_v11/201025_012355/0000/step_miniaodsim_6.root
+/cms/data/store/user/hatake/TopEFT/TTHJet_13TeV_TopEFT_v11/TTHJet_13TeV_TopEFT_MINIAOD_v11/201025_012355/0000/step_miniaodsim_7.root
+/cms/data/store/user/hatake/TopEFT/TTHJet_13TeV_TopEFT_v11/TTHJet_13TeV_TopEFT_MINIAOD_v11/201025_012355/0000/step_miniaodsim_8.root
+/cms/data/store/user/hatake/TopEFT/TTHJet_13TeV_TopEFT_v11/TTHJet_13TeV_TopEFT_MINIAOD_v11/201025_012355/0000/step_miniaodsim_9.root

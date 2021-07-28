@@ -1,0 +1,4 @@
+/cms/data/store/user/hatake/TopEFT/TTBBJet_13TeV_TopEFT_v04_2018/TTBBJet_13TeV_TopEFT_MINIAOD_v04_2018-v1/test/step_miniaodsim_1.root
+/cms/data/store/user/hatake/TopEFT/TTBBJet_13TeV_TopEFT_v04_2018/TTBBJet_13TeV_TopEFT_MINIAOD_v04_2018-v1/test/step_miniaodsim_2.root
+/cms/data/store/user/hatake/TopEFT/TTBBJet_13TeV_TopEFT_v04_2018/TTBBJet_13TeV_TopEFT_MINIAOD_v04_2018-v1/test/step_miniaodsim_3.root
+/cms/data/store/user/hatake/TopEFT/TTBBJet_13TeV_TopEFT_v04_2018/TTBBJet_13TeV_TopEFT_MINIAOD_v04_2018-v1/test/step_miniaodsim_4.root
